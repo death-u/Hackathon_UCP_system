@@ -1,0 +1,131 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UCP System</title>
+
+<!-- GSAP CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<link rel="stylesheet" href="{% static 'styles/index.css' %}">
+<link rel="icon" href="{% static 'images/icon_hack.jfif' %}" type="image/x-icon">
+
+</head>
+<body>
+      <!-- message -->
+  <div class="message_info2 "> 
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+  </div>
+
+<div class="auth-container">
+
+
+
+    <!-- LOGIN FORM -->
+    <form id="loginForm" method="POST" action="{% url 'login' %} " autocomplete="new-password">
+        {% csrf_token %}
+        <h2>Welcome Back</h2>
+        <p class="sub-text">Login to continue to your dashboard</p>
+
+        <div class="input-group">
+            <input type="email" placeholder="Email" name="email" id="l_email" required>
+        </div>
+
+        <div class="input-group">
+            <input type="password" placeholder="Password" id="loginPassword" name="password" autocomplete="new-password" required>
+            <span class="toggle-password" onclick="togglePassword('loginPassword')">Show</span>
+        </div>
+
+        <button type="submit">Login</button>
+
+        <p class="switch-text">
+            Don't have an account?
+            <span onclick="switchForm()">Register</span>
+        </p>
+    </form>
+
+    <!-- REGISTER FORM -->
+    <form id="registerForm" method="POST" action="{% url 'register' %}" autocomplete="off">
+
+        {% csrf_token %}
+
+        <h2>Create Your Account</h2>
+        <p class="sub-text">Access fast AI-powered insurance processing</p>
+
+        <div class="input-group">
+            <input type="text" placeholder="Full Name" name="full_name" required>
+        </div>
+
+        <div class="input-group">
+            <input type="email" placeholder="Email" name="email" required>
+        </div>
+
+        <div class="input-group">
+            <input type="password" placeholder="Password" id="registerPassword" name="password" required>
+            <span class="toggle-password" onclick="togglePassword('registerPassword')">Show</span>
+        </div>
+
+        <div class="input-group">
+            <input type="password" placeholder="Confirm Password" id="confirmPassword" name="c_password" required>
+            <span class="toggle-password" onclick="togglePassword('confirmPassword')">Show</span>
+        </div>
+
+        <button type="submit">Create Account</button>
+
+        <p class="switch-text">
+            Already have an account?
+            <span onclick="switchForm()">Login</span>
+        </p>
+    </form>
+
+</div>
+
+<script src="{% static 'js/index.js' %}"></script>
+<div class="message_info2" id="msg-container"> 
+  {% if messages %}
+      {% for message in messages %}
+          <div class="alert {{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+  {% endif %}
+</div>
+
+<script>
+    
+    window.addEventListener('DOMContentLoaded', (event) => {
+        
+        {% if messages %}
+            console.log("Django messages detected!"); 
+            
+            const msgBox = document.getElementById("msg-container");
+            
+            // GSAP Animation
+            gsap.to(msgBox, {
+                y: 30,         
+                duration: 0.7,
+                ease: "power4.out",
+                onStart: () => {
+                    console.log("GSAP started animating");
+                }
+            });
+
+            // Hide it after 4 seconds
+            gsap.to(msgBox, {
+                y: -100, 
+                delay: 4, 
+                duration: 0.5,
+                ease: "power4.in"
+            });
+        {% else %}
+            console.log("No Django messages found.");
+        {% endif %}
+    });
+</script>
+
+</body>
+</html>
