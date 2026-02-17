@@ -1,14 +1,184 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Smart Claims AI - Responsive Scroll</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <link rel="stylesheet" href="{% static 'styles/dashboard.css' %}">
+    <link rel="icon" href="{% static 'images/icon_hack.jfif' %}" type="image/x-icon">
+
+    <style>
+        /* Ensuring the dropdown matches your input/textarea styling */
+        select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            margin-bottom: 15px;
+            background-color: white;
+            color: #334155;
+            font-size: 14px;
+            cursor: pointer;
+            appearance: none; /* Removes default browser arrow */
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+        }
+    </style>
 </head>
 <body>
-   <h1>Welcome, {{ request.user.first_name }}</h1>
-<p>Email: {{ request.user.email }}</p>
-<a href="{% url 'logout' %}">Logout</a>
 
+<div class="navbar">
+    <div class="logo">Smart Claims AI</div>
+    <div class="profile">
+        <span>{{ request.user.first_name }}</span>
+        <img src="https://i.pravatar.cc/100" alt="profile" />
+    </div>
+</div>
+
+<div class="container">
+
+<div id="dashboard" class="section active">
+    <div class="card">
+        <h2>Welcome, {{ request.user.first_name }}</h2>
+        <p style="color: #64748b; margin-top: 5px;">Submit and track your insurance claims in minutes.</p>
+        <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+            <button class="btn primary" onclick="showSection('submitClaim')">Submit New Claim</button>
+            <button class="btn secondary" onclick="showSection('reviewPanel')">View Review Panel</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3 style="margin-bottom: 15px;">How It Works</h3>
+        <div class="grid">
+            <div class="info-card"><strong>Submit Claim</strong><br><small>Upload details and images</small></div>
+            <div class="info-card"><strong>AI Validation</strong><br><small>Policy verified instantly</small></div>
+            <div class="info-card"><strong>Risk Scoring</strong><br><small>ML detects anomalies</small></div>
+            <div class="info-card"><strong>Smart Decision</strong><br><small>Auto-approve or escalate</small></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3 style="margin-bottom: 15px;">Recent Claims</h3>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Claim ID</th>
+                        <th>Policy</th>
+                        <th>Date</th>
+                        <th>Risk</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>CLM-001</td>
+                        <td>POL-1023</td>
+                        <td>Feb 12</td>
+                        <td>Low</td>
+                        <td class="status-approved">Approved</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="submitClaim" class="section">
+    <div class="card">
+        <button class="btn secondary" style="margin-bottom: 20px;" onclick="showSection('dashboard')">← Back</button>
+        <h2>Submit New Claim</h2>
+        <br>
+        
+        <label for="policySelect" style="font-size: 14px; color: #64748b; margin-bottom: 5px; display: block;">Select Active Policy</label>
+        <select name="policy" id="policySelect">
+            <option value="" disabled selected>-- Choose a Policy --</option>
+            {% for policy in policies %}
+                <option value="{{ policy.id }}">{{ policy.policy_number }} - {{ policy.policy_type }}</option>
+            {% empty %}
+                <option disabled>No active policies found</option>
+            {% endfor %}
+        </select>
+
+        <input type="number" name="amount" placeholder="Claim Amount">
+        <textarea name="description" rows="4" placeholder="Description of the incident"></textarea>
+        
+        <div class="upload-box">
+            <p>Drag & Drop or Click to Upload Images</p>
+        </div>
+        <br>
+        <button class="btn primary" type="submit">Analyze Claim</button>
+    </div>
+</div>
+
+<div id="reviewPanel" class="section">
+    <div class="card">
+        <button class="btn secondary" style="margin-bottom: 20px;" onclick="showSection('dashboard')">← Back</button>
+        <h2>Claims Review Panel</h2>
+        <br>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Risk Score</th>
+                        <th>AI Recommendation</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>CLM-002</td>
+                        <td>John Doe</td>
+                        <td>2/10 (Low)</td>
+                        <td>Auto-Approve</td>
+                        <td>
+                            <div style="display: flex; gap: 5px;">
+                                <button class="btn primary" style="padding: 6px 12px; font-size: 13px;">Approve</button>
+                                <button class="btn secondary" style="padding: 6px 12px; font-size: 13px;">Reject</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<script src="{% static 'js/dashboard.js' %}"></script>
+<script>
+    // Cookie logic for CSRF
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                cookie = cookie.trim();
+                if (cookie.startsWith(name + '=')) {
+                    cookieValue = cookie.substring(name.length + 1);
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // Section handling (since it's not in your dashboard.js yet)
+    
+</script>
 </body>
 </html>
