@@ -12,8 +12,10 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / "secret.env")
 
 
 # Quick-start development settings - unsuitable for production
@@ -26,6 +28,12 @@ SECRET_KEY = 'django-insecure-a8lygg92)(*+ty0f_mzj7@b5f%%w6ntlplvn%-6@%10-oqa)u6
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
+# groq credencials
+
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+HF_TOKEN = os.getenv("HF_TOKEN")
+GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.1-8b-instant")
 
 
 # Application definition
@@ -124,8 +132,9 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
-
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 #  this is the code to delecte the session when the user logs out 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
-SESSION_COOKIE_AGE = 300 # 1209600  # 2 weeks in seconds
+SESSION_COOKIE_AGE = 800 # seconds (about 13 minutes)
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
